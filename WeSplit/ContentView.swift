@@ -58,12 +58,12 @@ struct ContentView: View {
                 } header: {
                     Text("Total")
                 }
-                .navigationTitle("WeSplit")
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Button("Done") {
-                            amountIsFocused = false
-                        }
+            }
+            .navigationTitle("WeSplit")
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Button("Done") {
+                        amountIsFocused = false
                     }
                 }
             }
