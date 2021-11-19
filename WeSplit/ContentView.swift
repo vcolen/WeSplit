@@ -15,19 +15,28 @@ struct ContentView: View {
     
     let tipPercentages = [0, 5, 10, 15, 20]
     
-    var totalPerPerson: Double {
-        let peopleCount = Double(numberOfPeople + 1)
+    var totalAmount: Double {
         let selectedTip = Double(tipPercentage)
         let tipValue = checkAmount / 100 * selectedTip
         
-        return (checkAmount + tipValue) / peopleCount
+        return checkAmount + tipValue
+    }
+    
+    var totalPerPerson: Double {
+        let peopleCount = Double(numberOfPeople + 1)
+        
+        return totalAmount / peopleCount
+    }
+    
+    var localCurrency = {
+        Locale.current.currencyCode ?? "USD"
     }
     
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currencyCode ?? "BRL") )
+                    TextField("Amount", value: $checkAmount, format: .currency(code: localCurrency()))
                         .keyboardType(.decimalPad)
                         .focused($amountIsFocused)
                 } header: {
@@ -44,24 +53,29 @@ struct ContentView: View {
                 
                 Section {
                     Picker("Tip percentage", selection: $tipPercentage) {
-                        ForEach(tipPercentages, id: \.self) {
+                        ForEach(0..<101) {
                             Text($0, format: .percent)
                         }
                     }
-                    .pickerStyle(.segmented)
-                } header: {
-                    Text("Tip amount")
                 }
                 
                 Section {
-                    Text(totalPerPerson, format: .currency(code: Locale.current.currencyCode ?? "BRL"))
+                    Text(totalAmount, format: .currency(code: localCurrency()))
                 } header: {
                     Text("Total")
+                }
+                
+                Section {
+                    Text(totalPerPerson, format: .currency(code: localCurrency()))
+                } header: {
+                    Text("Amount per person")
                 }
             }
             .navigationTitle("WeSplit")
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    
                     Button("Done") {
                         amountIsFocused = false
                     }
